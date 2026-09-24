@@ -7,29 +7,24 @@ import java.util.ArrayList;
 * @version Sep 22, 2026
 */
 
+import java.util.ArrayList;
+
 public class WordValidator {
 
     private WordBank wordBank;
 
-    // ----------------------------------------------------------
-    /**
-     * Create a new WordValidator object.
-     * @param wordBank
-     */
     public WordValidator(WordBank wordBank) {
         this.wordBank = wordBank;
     }
 
     /**
-     * Checks whether a word is valid.
-     *
-     * @param previousGuesses array list of previously guessed words
-     * @param guess entered guess
-     * @return whether the word is valid
+     * Checks whether a guess is valid.
      */
-    public boolean isValidGuess(String guess, ArrayList<String> previousGuesses) {
+    public boolean isValidGuess(
+        String guess,
+        ArrayList<String> previousGuesses) {
 
-        if (guess == null) {
+        if (guess == null || previousGuesses == null) {
             return false;
         }
 
@@ -39,8 +34,11 @@ public class WordValidator {
             return false;
         }
 
+        // Only allow English letters.
         for (int i = 0; i < guess.length(); i++) {
-            if (!Character.isLetter(guess.charAt(i))) {
+            char letter = guess.charAt(i);
+
+            if (letter < 'a' || letter > 'z') {
                 return false;
             }
         }
@@ -55,22 +53,25 @@ public class WordValidator {
 
         return true;
     }
-    
-    /**
-     * Checks whether a word is valid.
-     *
-     * @param previousGuesses array list of previously guessed words
-     * @param guess entered guess
-     * @return whether the current guess has already been guessed in the current game
-     */
-    public boolean isRepeatedGuess(String guess, ArrayList<String> previousGuesses) {
 
-        if (guess == null) {
+    /**
+     * Checks whether this word has already been guessed.
+     */
+    public boolean isRepeatedGuess(
+        String guess,
+        ArrayList<String> previousGuesses) {
+
+        if (guess == null || previousGuesses == null) {
             return false;
         }
 
-        guess = guess.toLowerCase();
+        for (String previous : previousGuesses) {
+            if (previous != null
+                && previous.equalsIgnoreCase(guess)) {
+                return true;
+            }
+        }
 
-        return previousGuesses.contains(guess);
+        return false;
     }
 }
